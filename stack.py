@@ -47,11 +47,3 @@ class Stack:
         return top
 
 
-s = Stack()
-s.push(1)
-s.push(2)
-s.push(3)
-s.push(4)
-print(s.pop())
-print(s.pop())
-print(s.length())
