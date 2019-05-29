@@ -1,36 +1,33 @@
+from void_array import Array
 import ctypes
-
 
 class Stack:
     def __init__(self):
-        self._array = ctypes.c_void_p * 1
-
+        self._array = Array(1)
         self._length = 0
-        self._capacity = 1
 
     def push(self, value):
-        if self._capacity == self._length:
-            array = ctypes.c_void_p * (self._capacity * 2)
-            self._array = array(
-                *list(filter(lambda x: x is not None, list(self._array))),
-                value)
+        if len(self._array) == self._length:
+            array = Array(len(self._array) * 2)
+            for i in range(len(self._array)):
+                array[i] = self._array[i]
+            array[len(self._array)] = value
+            self._array = array
             self._length += 1
-            self._capacity *= 2
         else:
             if self._length == 0:
-                self._array = (ctypes.c_void_p * self._capacity)(value)
+                self._array[0] = value
                 self._length += 1
             else:
-                self._array = (ctypes.c_void_p * self._capacity)(
-                    *list(filter(lambda x: x is not None, list(self._array))),
-                    value)
+                self._array[self._length] = value
                 self._length += 1
 
     def is_empty(self):
         return self._length == 0
 
-    def length(self):
+    def __len__(self):
         return self._length
+
 
     def peek(self):
         if self._length == 0:
@@ -40,10 +37,12 @@ class Stack:
 
     def pop(self):
         top = self.peek()
-        array = ctypes.c_void_p * (self._capacity - 1)
-        self._array = array(*list(self._array)[:-1])
-        self._capacity -= 1
+        if self._length * 2 == len(self._array):
+            array = Array(self._length)
+        else:
+            array = Array(len(self._array))
+        for i in range(len(self._array) - 1):
+            array[i] = self._array[i]
+        self._array = array
         self._length -= 1
         return top
-
-
